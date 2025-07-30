@@ -22,7 +22,8 @@ public class ClienteServiceImpl implements ClienteService {
        if(id == null){
         throw new RuntimeException("El id no puede ser nulo");
        }   
-        return clienteRepository.findById(id).orElse(null);
+        return clienteRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("El cliente no existe"));
     }
 
     @Transactional(readOnly = true)
