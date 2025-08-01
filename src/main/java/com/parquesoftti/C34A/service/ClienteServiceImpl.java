@@ -43,12 +43,21 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Transactional(readOnly = false, rollbackFor = RuntimeException.class)
     public Cliente update(Cliente cliente,Long id){
-        boolean clienteExistente = clienteRepository.existsById(id);
+        Cliente clienteExistente = findById(id);
 
-        if(!clienteExistente){
+        if(clienteExistente == null){
             throw new RuntimeException("El cliente no existe");
         }
-        return  clienteRepository.save(cliente);
+
+      if(cliente.getNombre() != null && !cliente.getNombre().isEmpty() && !cliente.getNombre().isBlank()){
+        clienteExistente.setNombre(cliente.getNombre());
+        }
+
+        if(cliente.getTelefono() != null && !cliente.getTelefono().isEmpty() && !cliente.getTelefono().isBlank()){
+            clienteExistente.setTelefono(cliente.getTelefono());
+        }
+
+        return  clienteRepository.save(clienteExistente);
     }
 
     @Transactional(readOnly = false, rollbackFor = RuntimeException.class)
