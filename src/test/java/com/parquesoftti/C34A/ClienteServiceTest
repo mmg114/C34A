@@ -1,0 +1,62 @@
+package com.parquesoftti.panaderia;
+
+import com.parquesoftti.panaderia.exception.ClienteNotFoundException;
+import com.parquesoftti.panaderia.model.Cliente;
+import com.parquesoftti.panaderia.repository.ClienteRepository;
+import com.parquesoftti.panaderia.service.ClienteService;
+import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+public class ClienteServiceTest {
+
+    @Mock
+    private ClienteRepository clienteRepository;
+
+    @InjectMocks
+    private ClienteService clienteService;
+
+    private AutoCloseable closeable;
+
+    @BeforeEach
+    void setUp(){
+        closeable = MockitoAnnotations.openMocks( this);
+    }
+@Test
+    void getAllClietn(){
+        Cliente[] clientes = new Cliente[]{new Cliente(1L, "Juan", "123"), new Cliente(2L, "Pedro", "1233323")};
+        when(clienteRepository.findAll()).thenReturn(List.of(clientes));
+
+        var result = clienteService.getAllClients();
+
+        assertEquals(2,result.size());
+        verify(clienteRepository).findAll();
+
+    }
+
+    @Test
+    void update_shouldThrowIfClientNotFound() {
+      Cliente update = new Cliente(null, "X", "000");
+
+        when(clienteRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ClienteNotFoundException.class, () -> clienteService.update(99L, update));
+    }
+
+
+
+
+
+
+}
